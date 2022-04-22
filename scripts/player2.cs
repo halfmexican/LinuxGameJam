@@ -99,14 +99,12 @@ namespace LinuxJam
         {
             for (int i = 0; i < GetSlideCount(); i++)
             {
-                KinematicCollision2D hit = GetSlideCollision(i);
-                
-               var hitObject = hit.Collider as RigidBody2D;
-               
-               if (hitObject != null && hitObject.IsInGroup("pushable") && armCheck.IsColliding())
-               {
-                   hitObject.ApplyCentralImpulse(new Vector2(velocity.x, 0));
-               }
+                var hit = GetSlideCollision(i);
+
+                if (hit.Collider is RigidBody2D hitObject && hitObject.IsInGroup("pushable") && armCheck.IsColliding())
+                {
+                    hitObject.ApplyCentralImpulse(new Vector2(velocity.x, 0));
+                }
                
             }
         }
