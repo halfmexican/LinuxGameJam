@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/spikestab.ogg-a0dc84f2d9b61a9f8e268c187f33f63e.oggstr"
+
+[deps]
+
+source_file="res://assets/sounds/spikestab.ogg"
+dest_files=[ "res://.import/spikestab.ogg-a0dc84f2d9b61a9f8e268c187f33f63e.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0

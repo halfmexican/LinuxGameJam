@@ -1,0 +1,61 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://assets/enemy.png" type="Texture" id=1]
+[ext_resource path="res://scripts/testenemy.cs" type="Script" id=2]
+
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 1 )
+region = Rect2( 16, 16, 16, 16 )
+
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [ SubResource( 1 ), SubResource( 2 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 7, 4 )
+
+[sub_resource type="CapsuleShape2D" id=4]
+radius = 7.0
+height = 0.0
+
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 8, 8.5 )
+
+[sub_resource type="RectangleShape2D" id=7]
+extents = Vector2( 6, 1 )
+
+[node name="testenemy" type="KinematicBody2D" groups=["enemy"]]
+script = ExtResource( 2 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 3.8147e-05, -3.8147e-06 )
+frames = SubResource( 3 )
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="." groups=["enemy"]]
+position = Vector2( 0, -4 )
+shape = SubResource( 5 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["enemy"]]
+position = Vector2( 0, 1 )
+shape = SubResource( 4 )
+
+[node name="Area2D" type="Area2D" parent="." groups=["enemy"]]
+priority = 1.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" groups=["enemy"]]
+position = Vector2( 0, -0.5 )
+shape = SubResource( 6 )
+
+[node name="EnemyKiller" type="Area2D" parent="." groups=["enemykiller"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyKiller"]
+position = Vector2( 0, -10 )
+shape = SubResource( 7 )
