@@ -7,10 +7,6 @@
 atlas = ExtResource( 1 )
 region = Rect2( 16, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=5]
-atlas = ExtResource( 1 )
-region = Rect2( 0, 16, 16, 16 )
-
 [sub_resource type="AtlasTexture" id=3]
 atlas = ExtResource( 1 )
 region = Rect2( 0, 0, 16, 16 )
@@ -19,6 +15,10 @@ region = Rect2( 0, 0, 16, 16 )
 atlas = ExtResource( 1 )
 region = Rect2( 16, 16, 16, 16 )
 
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 16, 16, 16 )
+
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
 "frames": [ SubResource( 7 ) ],
@@ -26,20 +26,20 @@ animations = [ {
 "name": "default",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 5 ) ],
-"loop": true,
-"name": "jump",
-"speed": 5.0
-}, {
 "frames": [ SubResource( 3 ), SubResource( 6 ) ],
 "loop": true,
 "name": "walking",
 "speed": 5.0
+}, {
+"frames": [ SubResource( 5 ) ],
+"loop": true,
+"name": "jump",
+"speed": 5.0
 } ]
 
 [sub_resource type="CapsuleShape2D" id=2]
-radius = 8.0
-height = 0.0
+radius = 6.0
+height = 6.0
 
 [sub_resource type="RectangleShape2D" id=8]
 extents = Vector2( 7.5, 8.5 )
@@ -51,6 +51,7 @@ script = ExtResource( 2 )
 frames = SubResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, -1 )
 shape = SubResource( 2 )
 
 [node name="grounder" type="RayCast2D" parent="."]
@@ -67,7 +68,6 @@ cast_to = Vector2( 18, 0 )
 [node name="interactor" type="Area2D" parent="." groups=["player"]]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="interactor"]
-position = Vector2( 0, -0.5 )
 shape = SubResource( 8 )
 
 [node name="headchecker" type="RayCast2D" parent="."]
