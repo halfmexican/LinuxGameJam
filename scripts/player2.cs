@@ -129,7 +129,7 @@ namespace LinuxJam.scripts
 			}
 			else if (IsOnFloor())
 			{
-				_isGrounded = IsOnFloor();
+				//_isGrounded = IsOnFloor();
 			}
 			else
 			{
