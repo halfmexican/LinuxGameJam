@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using LinuxJam.scripts;
 
 public class JumpPad : Area2D
 {
@@ -8,7 +9,7 @@ public class JumpPad : Area2D
 	// private string b = "text";
 	private AnimatedSprite myspSprite;
 	private AudioStreamPlayer2D _audioStreamPlayer2D;
-	
+	float _jumpPadForce = -200f;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -27,8 +28,22 @@ public class JumpPad : Area2D
 
 	private void CollisionCheck(Node2D body)
 	{
+		
 		if (body.IsInGroup("player"))
 		{
+			if (body.GetParent() is Player2D)
+			{
+				var player = body.GetParent() as Player2D;
+				player.setYVelocity(_jumpPadForce);
+			}
+			else if (body.GetParent() is deadPlayer)
+			{
+				var player = body.GetParent() as deadPlayer;
+				player.setYVelocity(_jumpPadForce);
+			}
+			
+			
+			
 			RandomNumberGenerator random = new RandomNumberGenerator();
 			random.Randomize();
 			myspSprite.Play("bounce");
