@@ -85,10 +85,10 @@ namespace LinuxJam.scripts
 			else if (body.IsInGroup("player"))
 			{
 				killedEnemy = true;
-				if (body.GetParent() is KinematicBody2D enemy)
+				if (body.GetParent() is Player2D enemy)
 				{
-					enemyPos = enemy.Position;
-					enemy.QueueFree();
+					enemyPos = enemy.Position; // used enenmy variable name for player
+					enemy.KillPlayer(false);
 				}
 
 				var playerSpawner = ResourceLoader.Load<PackedScene>("res://assets/respawner.tscn").Instance();

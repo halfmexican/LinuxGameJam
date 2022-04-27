@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/Little Bits Crush.ogg-28ee45da1f2968533c9075e52e4dbc01.oggstr"
+
+[deps]
+
+source_file="res://assets/sounds/Little Bits Crush.ogg"
+dest_files=[ "res://.import/Little Bits Crush.ogg-28ee45da1f2968533c9075e52e4dbc01.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

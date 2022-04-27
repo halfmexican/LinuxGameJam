@@ -9,6 +9,7 @@ public class JumpPad : Area2D
 	// private string b = "text";
 	private AnimatedSprite myspSprite;
 	private AudioStreamPlayer2D _audioStreamPlayer2D;
+	[Export]
 	float _jumpPadForce = -200f;
 
 	// Called when the node enters the scene tree for the first time.
@@ -26,19 +27,19 @@ public class JumpPad : Area2D
 //      
 //  }
 
-	private void CollisionCheck(Node2D body)
+	private void CollisionCheck(Node2D area)
 	{
 		
-		if (body.IsInGroup("player"))
+		if (area.IsInGroup("player"))
 		{
-			if (body.GetParent() is Player2D)
+			if (area.GetParent() is Player2D)
 			{
-				var player = body.GetParent() as Player2D;
-				player.setYVelocity(_jumpPadForce);
+				var player = area.GetParent() as Player2D;
+				player.SetYVelocity(_jumpPadForce);
 			}
-			else if (body.GetParent() is deadPlayer)
+			else if (area.GetParent() is deadPlayer)
 			{
-				var player = body.GetParent() as deadPlayer;
+				var player = area.GetParent() as deadPlayer;
 				player.setYVelocity(_jumpPadForce);
 			}
 			

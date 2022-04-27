@@ -16,7 +16,7 @@ public class spike : StaticBody2D
 		_audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D");
 		_animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
 		_area2D = GetNode<Area2D>("Area2D");
-		_area2D.Connect("body_entered", this, "CollisionCheck");
+		_area2D.Connect("area_entered", this, "CollisionCheck");
 		_animatedSprite.Play("default");
 
 	}

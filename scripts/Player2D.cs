@@ -18,18 +18,21 @@ namespace LinuxJam.scripts
 
 		[Export()] private float _jumpForce = 75.0f, _inertia = 100f;
 		private bool _isJumping = false;
-		private int health = 1;
+		private int health = 1, coins = 0;
 		private bool _dead = false;
-		private RayCast2D  _armCheck, _headChecker;
+		private RayCast2D  _rightArmCheck,_leftArmCheck, _grounder ;
 		private AnimatedSprite _playerSprite;
 		private AudioStreamPlayer2D _audioStreamPlayer2D;
 		private Area2D _interactor;
+		private Camera2D _camera2D;
 
 		// Called when the node enters the scene tree for the first time.
 		public override void _Ready()
 		{
-			_armCheck = GetNode<RayCast2D>("arm");
-			_headChecker = GetNode<RayCast2D>("headchecker");
+			_camera2D = GetNode<Camera2D>("Camera2D");
+			_grounder = GetNode<RayCast2D>("Grounder");
+			_rightArmCheck = GetNode<RayCast2D>("RightArm");
+			_leftArmCheck = GetNode<RayCast2D>("LeftArm");
 			_playerSprite = GetNode<AnimatedSprite>("PlayerSprite");
 			_audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("sounder");
 			_interactor = GetNode<Area2D>("interactor");
@@ -39,16 +42,15 @@ namespace LinuxJam.scripts
 		{
 			if (health <= 0 && !_dead)
 			{
-				var deadPlayer = ResourceLoader.Load<PackedScene>("res://assets/deadPlayer.tscn").Instance();
-				var deadPlayerInstance = (Node2D)deadPlayer;
-				GetParent().AddChild(deadPlayerInstance);
-				deadPlayerInstance.Position = Position;
-				_dead = true;
-				var playerSpawner = ResourceLoader.Load<PackedScene>("res://assets/respawner.tscn").Instance();
-				GetParent().AddChild(playerSpawner);
+				KillPlayer(true);
 				
-				QueueFree();
-				
+			}
+			
+			if (Input.IsActionJustPressed("player_jump") && IsGrounded() && !_isJumping)
+			{
+				_velocity.y = -_jumpForce;
+				_isJumping = true;
+				JumpSound();
 			}
 		}
 
@@ -57,47 +59,37 @@ namespace LinuxJam.scripts
 			_velocity.y += delta * _gravity;
 			
 
-			if (Input.IsPhysicalKeyPressed(KeyList.D.GetHashCode()) && _velocity.x < _maxSpeed)
+			if (Input.IsPhysicalKeyPressed(KeyList.D.GetHashCode()) && _velocity.x < _maxSpeed && !_rightArmCheck.IsColliding())
 			{
 				_velocity.x += _speed;
-				_armCheck.CastTo = new Vector2(18, 0);
 				_playerSprite.FlipH = false;
+				_grounder.Position = new Vector2(-7, 0);
 				
-				if (IsOnFloor())
+				if (IsGrounded())
 					_playerSprite.Play("walking", false);
 				
 			}
-			else if (Input.IsPhysicalKeyPressed(KeyList.A.GetHashCode()) && -_velocity.x < _maxSpeed)
+			else if (Input.IsPhysicalKeyPressed(KeyList.A.GetHashCode()) && -_velocity.x < _maxSpeed && !_leftArmCheck.IsColliding())
 			{
 				_velocity.x += _speed * -1;
-				_armCheck.CastTo = new Vector2(-18, 0);
 				_playerSprite.FlipH = true;
-				if (IsOnFloor())
+				_grounder.Position = new Vector2(7, 0);
+
+				if (IsGrounded())
 					_playerSprite.Play("walking", false);
 			
 			}
-			else if (IsOnFloor())
+			else if (IsGrounded())
 			{
 				_velocity.x = Mathf.Lerp(_velocity.x, 0, _friction);
-				_isJumping = false;
 				if (!Input.IsPhysicalKeyPressed(KeyList.A.GetHashCode()) && !Input.IsPhysicalKeyPressed(KeyList.D.GetHashCode()))
 				{
 					_playerSprite.Play("default");
 				}
 			}
-		
-			if (Input.IsPhysicalKeyPressed(KeyList.Space.GetHashCode()) && IsOnFloor() && !_isJumping)
-			{
-				_velocity.y = -_jumpForce;
-				_isJumping = true;
-				JumpSound();
-				
-			}
 
-			if (IsOnCeiling())
-			{
-				_velocity.y *= -1;
-			}
+			if (IsGrounded())
+				_isJumping = false;
 
 			if (_isJumping)
 			{
@@ -106,21 +98,25 @@ namespace LinuxJam.scripts
 			
 			_velocity = MoveAndSlide(_velocity, Vector2.Up, false, 4, 0.785f, false);
 			
+			if (IsOnCeiling())
+			{
+				_velocity.y *= -1;
+			}
+			
 			MoveShit();
-
 		}
 
 		private void MoveShit()
 		{
 			for (int i = 0; i < GetSlideCount(); i++)
 			{
-				var hit = GetSlideCollision(i);
-
-				if (hit.Collider is RigidBody2D hitObject && hitObject.IsInGroup("pushable") && _armCheck.IsColliding())
+				var collision = GetSlideCollision(i);
+				if (collision.Collider is RigidBody2D hitObject && hitObject.IsInGroup("pushable") && IsGrounded())
 				{
-					hitObject.ApplyCentralImpulse(new Vector2(-hit.Normal.x * _inertia, 0));
+					hitObject.ApplyCentralImpulse(-collision.Normal * _inertia);
 				}
 			}
+
 		}
 
 		public void JumpSound()
@@ -132,19 +128,68 @@ namespace LinuxJam.scripts
 			_audioStreamPlayer2D.Play();
 		}
 
-		public void setVelocity(Vector2 vel)
+		public void SetVelocity(Vector2 vel)
 		{
 			_velocity = vel;
 		}
 
-		public void setYVelocity(float yVel)
+		public void SetYVelocity(float yVel)
 		{
 			_velocity.y = yVel;
 		}
 		
-		public void setXVelocity(float xVel)
+		public void SetXVelocity(float xVel)
 		{
 			_velocity.x = xVel;
+		}
+
+		public void AddCoins(int num)
+		{
+			coins += num;
+		}
+
+		private bool IsGrounded()
+		{
+			if (_grounder.IsColliding())
+			{
+				return _grounder.IsColliding();
+			}
+			else if(IsOnFloor())
+			{
+				return IsOnFloor();
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		public void KillPlayer(bool leaveCorpse)
+		{
+			if (leaveCorpse)
+			{
+				var deadPlayer = ResourceLoader.Load<PackedScene>("res://assets/deadPlayer.tscn").Instance();
+				var deadPlayerInstance = (Node2D)deadPlayer;
+				GetParent().AddChild(deadPlayerInstance);
+				deadPlayerInstance.Position = Position;
+				
+				RemoveChild(_camera2D);
+				deadPlayerInstance.AddChild(_camera2D);
+				_camera2D.Owner = deadPlayerInstance;
+			}
+			else
+			{
+				RemoveChild(_camera2D);
+				_camera2D.GlobalPosition = GlobalPosition;
+				GetParent().AddChild(_camera2D);
+				_camera2D.Owner = GetParent();
+			}
+			
+			_dead = true;
+			var playerSpawner = ResourceLoader.Load<PackedScene>("res://assets/respawner.tscn").Instance();
+			GetParent().AddChild(playerSpawner);
+			
+			QueueFree();
 		}
 
 
@@ -171,7 +216,7 @@ namespace LinuxJam.scripts
 
 			if (area.IsInGroup("enemykiller"))
 			{
-				//_velocity.y = -_jumpPadForce / 2;
+				SetYVelocity(-150f);
 				
 				area.GetParent().QueueFree();
 			}

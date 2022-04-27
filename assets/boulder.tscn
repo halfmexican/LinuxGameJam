@@ -41,6 +41,7 @@ extents = Vector2( 13, 8.25 )
 
 [node name="Boulder" type="RigidBody2D" groups=["pushable"]]
 position = Vector2( 336, 130 )
+collision_layer = 2
 mode = 2
 mass = 75.21
 gravity_scale = 2.0

@@ -30,9 +30,10 @@ height = 0.0
 extents = Vector2( 8, 8.5 )
 
 [sub_resource type="RectangleShape2D" id=7]
-extents = Vector2( 6, 1 )
+extents = Vector2( 6, 1.5 )
 
 [node name="testenemy" type="KinematicBody2D" groups=["enemy"]]
+collision_layer = 3
 script = ExtResource( 2 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
@@ -56,6 +57,6 @@ shape = SubResource( 6 )
 
 [node name="EnemyKiller" type="Area2D" parent="." groups=["enemykiller"]]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyKiller"]
-position = Vector2( 0, -10 )
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyKiller" groups=["enemykiller"]]
+position = Vector2( 0, -10.5 )
 shape = SubResource( 7 )
