@@ -530,9 +530,8 @@ position = Vector2( 120, 152 )
 [node name="spike" parent="." instance=ExtResource( 7 )]
 position = Vector2( 456, 264 )
 
-[node name="player2" parent="." instance=ExtResource( 2 )]
-position = Vector2( 56, 176 )
-_inertia = 150.0
+[node name="player" parent="." instance=ExtResource( 2 )]
+position = Vector2( 56, 144 )
 
 [node name="Coin2" parent="." instance=ExtResource( 6 )]
 position = Vector2( 120, 176 )
@@ -548,8 +547,9 @@ position = Vector2( 408, 216 )
 _jumpPadForce = -200.0
 
 [node name="Boulder" parent="." instance=ExtResource( 3 )]
-position = Vector2( 304, -24 )
+position = Vector2( 304, -32 )
 collision_mask = 3
+contacts_reported = 12
 buttonLinked = true
 
 [node name="button1" parent="." instance=ExtResource( 8 )]
@@ -564,4 +564,4 @@ position = Vector2( 536, 96 )
 [node name="SpawnPoint" parent="." instance=ExtResource( 10 )]
 
 [node name="spike6" parent="." instance=ExtResource( 7 )]
-position = Vector2( 344, 184 )
+position = Vector2( 512, 192 )

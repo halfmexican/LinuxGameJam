@@ -44,12 +44,13 @@ extents = Vector2( 7, 8 )
 extents = Vector2( 8, 9 )
 
 [node name="player" type="KinematicBody2D" groups=["player"]]
-position = Vector2( 0, 1 )
+position = Vector2( 144, 152 )
 collision_layer = 3
 collision/safe_margin = 0.3
 script = ExtResource( 2 )
 _speed = 15.0
 _jumpForce = 125.0
+_inertia = 150.0
 
 [node name="PlayerSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
