@@ -7,6 +7,10 @@
 atlas = ExtResource( 1 )
 region = Rect2( 16, 0, 16, 16 )
 
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 16, 16, 16 )
+
 [sub_resource type="AtlasTexture" id=3]
 atlas = ExtResource( 1 )
 region = Rect2( 0, 0, 16, 16 )
@@ -15,57 +19,58 @@ region = Rect2( 0, 0, 16, 16 )
 atlas = ExtResource( 1 )
 region = Rect2( 16, 16, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=5]
-atlas = ExtResource( 1 )
-region = Rect2( 0, 16, 16, 16 )
-
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
 "frames": [ SubResource( 7 ) ],
-"loop": true,
+"loop": false,
 "name": "default",
-"speed": 5.0
-}, {
-"frames": [ SubResource( 3 ), SubResource( 6 ) ],
-"loop": true,
-"name": "walking",
 "speed": 5.0
 }, {
 "frames": [ SubResource( 5 ) ],
 "loop": true,
 "name": "jump",
 "speed": 5.0
+}, {
+"frames": [ SubResource( 3 ), SubResource( 6 ) ],
+"loop": true,
+"name": "walking",
+"speed": 5.0
 } ]
 
-[sub_resource type="CapsuleShape2D" id=2]
-radius = 7.0
-height = 2.0
+[sub_resource type="RectangleShape2D" id=9]
+extents = Vector2( 7, 8 )
 
 [sub_resource type="RectangleShape2D" id=8]
-extents = Vector2( 7, 9 )
+extents = Vector2( 8, 9 )
 
 [node name="player" type="KinematicBody2D" groups=["player"]]
+position = Vector2( 0, 1 )
 collision_layer = 3
 collision/safe_margin = 0.3
 script = ExtResource( 2 )
+_speed = 15.0
+_jumpForce = 125.0
 
 [node name="PlayerSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["player"]]
-shape = SubResource( 2 )
+shape = SubResource( 9 )
 
 [node name="RightArm" type="RayCast2D" parent="."]
+position = Vector2( 0, 6 )
 enabled = true
 cast_to = Vector2( 10, 0 )
 
 [node name="LeftArm" type="RayCast2D" parent="."]
+position = Vector2( 0, 6 )
 enabled = true
 cast_to = Vector2( -10, 0 )
 
 [node name="sounder" type="AudioStreamPlayer2D" parent="."]
 
 [node name="interactor" type="Area2D" parent="." groups=["player"]]
+collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="interactor"]
 shape = SubResource( 8 )

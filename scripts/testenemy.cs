@@ -33,7 +33,7 @@ public class testenemy : KinematicBody2D
 
 			}
 			
-			MoveAndSlide(velocity);
+			velocity = MoveAndSlide(velocity);
 		}
 		
 		

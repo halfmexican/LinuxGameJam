@@ -18,7 +18,7 @@ namespace LinuxJam.scripts
 
 		[Export()] private float _jumpForce = 75.0f, _inertia = 100f;
 		private bool _isJumping = false;
-		private int health = 1, coins = 0;
+		private int _health = 1, _coins = 0;
 		private bool _dead = false;
 		private RayCast2D  _rightArmCheck,_leftArmCheck, _grounder ;
 		private AnimatedSprite _playerSprite;
@@ -40,18 +40,17 @@ namespace LinuxJam.scripts
 		}
 		public override void _Process(float delta)
 		{
-			if (health <= 0 && !_dead)
+			if (_health <= 0 && !_dead)
 			{
 				KillPlayer(true);
 				
 			}
-			
-			if (Input.IsActionJustPressed("player_jump") && IsGrounded() && !_isJumping)
+
+			if (_isJumping)
 			{
-				_velocity.y = -_jumpForce;
-				_isJumping = true;
-				JumpSound();
+				_playerSprite.Play("jump");
 			}
+			
 		}
 
 		public override void _PhysicsProcess(float delta)
@@ -66,8 +65,10 @@ namespace LinuxJam.scripts
 				_grounder.Position = new Vector2(-7, 0);
 				
 				if (IsGrounded())
+				{
+					_isJumping = false;
 					_playerSprite.Play("walking", false);
-				
+				}
 			}
 			else if (Input.IsPhysicalKeyPressed(KeyList.A.GetHashCode()) && -_velocity.x < _maxSpeed && !_leftArmCheck.IsColliding())
 			{
@@ -75,25 +76,28 @@ namespace LinuxJam.scripts
 				_playerSprite.FlipH = true;
 				_grounder.Position = new Vector2(7, 0);
 
-				if (IsGrounded())
+				if(IsGrounded())
+				{
+					_isJumping = false;
 					_playerSprite.Play("walking", false);
-			
+				}
 			}
 			else if (IsGrounded())
 			{
 				_velocity.x = Mathf.Lerp(_velocity.x, 0, _friction);
-				if (!Input.IsPhysicalKeyPressed(KeyList.A.GetHashCode()) && !Input.IsPhysicalKeyPressed(KeyList.D.GetHashCode()))
+				if (!Input.IsPhysicalKeyPressed(KeyList.A.GetHashCode()) && !Input.IsPhysicalKeyPressed(KeyList.D.GetHashCode()) && !_isJumping)
 				{
 					_playerSprite.Play("default");
+					
 				}
 			}
-
-			if (IsGrounded())
-				_isJumping = false;
-
-			if (_isJumping)
+			
+			if (Input.IsActionJustPressed("player_jump") && IsGrounded() && !_isJumping)
 			{
+				_velocity.y = -_jumpForce;
+				_isJumping = true;
 				_playerSprite.Play("jump");
+				JumpSound();
 			}
 			
 			_velocity = MoveAndSlide(_velocity, Vector2.Up, false, 4, 0.785f, false);
@@ -110,117 +114,126 @@ namespace LinuxJam.scripts
 		{
 			for (int i = 0; i < GetSlideCount(); i++)
 			{
-				var collision = GetSlideCollision(i);
-				if (collision.Collider is RigidBody2D hitObject && hitObject.IsInGroup("pushable") && IsGrounded())
+				var hit = GetSlideCollision(i);
+				if (hit.Collider is RigidBody2D hitObject)
 				{
-					hitObject.ApplyCentralImpulse(-collision.Normal * _inertia);
-				}
-			}
+					if (hitObject.IsInGroup("pushable"))
+					{
+						hitObject.ApplyCentralImpulse(new Vector2(-hit.Normal.x * _inertia, 0));
+					}
 
+					if (hitObject.IsInGroup("corpse"))
+					{
+						hitObject.ApplyCentralImpulse(new Vector2(-hit.Normal.x * _inertia, 0));
+					}
+
+				}
+
+			}
 		}
 
 		public void JumpSound()
-		{
-			RandomNumberGenerator random = new RandomNumberGenerator();
-			random.Randomize();
-			_audioStreamPlayer2D.Stream = ResourceLoader.Load("res://assets/sounds/jump.wav") as AudioStream;
-			_audioStreamPlayer2D.PitchScale = random.RandfRange(0.8f, 1.2f);
-			_audioStreamPlayer2D.Play();
-		}
+			{
+				RandomNumberGenerator random = new RandomNumberGenerator();
+				random.Randomize();
+				_audioStreamPlayer2D.Stream = ResourceLoader.Load("res://assets/sounds/jump.wav") as AudioStream;
+				_audioStreamPlayer2D.PitchScale = random.RandfRange(0.8f, 1.2f);
+				_audioStreamPlayer2D.Play();
+			}
 
-		public void SetVelocity(Vector2 vel)
-		{
-			_velocity = vel;
-		}
+			public void SetVelocity(Vector2 vel)
+			{
+				_velocity = vel;
+			}
 
-		public void SetYVelocity(float yVel)
-		{
-			_velocity.y = yVel;
-		}
+			public void SetYVelocity(float yVel)
+			{
+				_velocity.y = yVel;
+			}
 		
-		public void SetXVelocity(float xVel)
-		{
-			_velocity.x = xVel;
-		}
-
-		public void AddCoins(int num)
-		{
-			coins += num;
-		}
-
-		private bool IsGrounded()
-		{
-			if (_grounder.IsColliding())
+			public void SetXVelocity(float xVel)
 			{
-				return _grounder.IsColliding();
+				_velocity.x = xVel;
 			}
-			else if(IsOnFloor())
-			{
-				return IsOnFloor();
-			}
-			else
-			{
-				return false;
-			}
-		}
 
-		public void KillPlayer(bool leaveCorpse)
-		{
-			if (leaveCorpse)
+			public void AddCoins(int num)
 			{
-				var deadPlayer = ResourceLoader.Load<PackedScene>("res://assets/deadPlayer.tscn").Instance();
-				var deadPlayerInstance = (Node2D)deadPlayer;
-				GetParent().AddChild(deadPlayerInstance);
-				deadPlayerInstance.Position = Position;
+				_coins += num;
+			}
+
+			private bool IsGrounded()
+			{
+				if (_grounder.IsColliding())
+				{
+					return _grounder.IsColliding();
+				}
+				else if(IsOnFloor())
+				{
+					return IsOnFloor();
+				}
+				else
+				{
+					return false;
+				}
+			}
+
+			public void KillPlayer(bool leaveCorpse)
+			{
+				if (leaveCorpse)
+				{
+					var deadPlayer = ResourceLoader.Load<PackedScene>("res://assets/deadPlayer.tscn").Instance();
+					var deadPlayerInstance = (Node2D)deadPlayer;
+					GetParent().AddChild(deadPlayerInstance);
+					deadPlayerInstance.Position = Position;
 				
-				RemoveChild(_camera2D);
-				deadPlayerInstance.AddChild(_camera2D);
-				_camera2D.Owner = deadPlayerInstance;
-			}
-			else
-			{
-				RemoveChild(_camera2D);
-				_camera2D.GlobalPosition = GlobalPosition;
-				GetParent().AddChild(_camera2D);
-				_camera2D.Owner = GetParent();
-			}
+					RemoveChild(_camera2D);
+					deadPlayerInstance.AddChild(_camera2D);
+					_camera2D.Owner = deadPlayerInstance;
+				}
+				else
+				{
+					RemoveChild(_camera2D);
+					_camera2D.GlobalPosition = GlobalPosition;
+					GetParent().AddChild(_camera2D);
+					_camera2D.Owner = GetParent();
+				}
 			
-			_dead = true;
-			var playerSpawner = ResourceLoader.Load<PackedScene>("res://assets/respawner.tscn").Instance();
-			GetParent().AddChild(playerSpawner);
-			
-			QueueFree();
-		}
-
-
-		private void InteractorCollision(Node2D area)
-		{
-			if (area.IsInGroup("jumpPad"))
-			{
-				//_velocity.y = -_jumpPadForce ;
-				_isJumping = true;
-			}
-
-			if (area.IsInGroup("enemy") || area.IsInGroup("obstacle"))
-			{
-				health--;
-			}
-
-			if (area.IsInGroup("instantkill"))
-			{
-				health = 0;
 				_dead = true;
-				_playerSprite.Visible = false;
-
+				var playerSpawner = ResourceLoader.Load<PackedScene>("res://assets/respawner.tscn").Instance();
+				GetParent().AddChild(playerSpawner);
+			
+				QueueFree();
 			}
 
-			if (area.IsInGroup("enemykiller"))
+
+			private void InteractorCollision(Node2D area)
 			{
-				SetYVelocity(-150f);
+				if (area.IsInGroup("jumpPad"))
+				{
+					//_velocity.y = -_jumpPadForce ;
+					_isJumping = true;
+				}
+
+				if (area.IsInGroup("enemy") || area.IsInGroup("obstacle"))
+				{
+					_health--;
+				}
+
+				if (area.IsInGroup("instantkill"))
+				{
+					_health = 0;
+					_dead = true;
+					_playerSprite.Visible = false;
+
+				}
+
+				if (area.IsInGroup("enemykiller") && GlobalPosition.y < area.GlobalPosition.y)
+				{
+					SetYVelocity(-150f);
 				
-				area.GetParent().QueueFree();
+					area.GetParent().QueueFree();
+				}
 			}
-		}
 		
 	}
 }
