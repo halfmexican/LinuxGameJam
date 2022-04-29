@@ -39,6 +39,7 @@ namespace LinuxJam.scripts
 			if (buttonLinked)
 			{
 				_isStatic = true;
+				_mySprite.Visible = false;
 				var button = GetParent().GetNode("button" + buttonNumber.ToString());
 				button.Connect("button_activated", this, "ButtonPressed");
 			}
@@ -55,6 +56,7 @@ namespace LinuxJam.scripts
 		{
 			_isStatic = false;
 			buttonLinked = false;
+			_mySprite.Visible = true;
 		}
 		
 		private void Blood(Node body)

@@ -6,7 +6,7 @@ namespace LinuxJam.scripts
     {
         public Node CurrentScene { get; set; }
         public static int coins = 0;
-        public static int HP = 3;
+        public static int HP = 1;
 
         public override void _Ready()
         {

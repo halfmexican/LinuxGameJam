@@ -23,7 +23,7 @@ namespace LinuxJam.scripts
 				var playerClass = ResourceLoader.Load("res://assets/player.tscn") as PackedScene;
 				var player = playerClass.Instance() as Node2D;
 				player.GlobalPosition = spawnPoint.GlobalPosition;
-				PlayerVariables.HP = 3;
+				PlayerVariables.HP = 1;
 				GetParent().AddChild(player);
 				QueueFree();
 			}

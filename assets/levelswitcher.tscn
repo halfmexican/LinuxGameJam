@@ -29,7 +29,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=5]
-extents = Vector2( 16, 16 )
+extents = Vector2( 16, 52 )
 
 [node name="levelswitcher" type="Area2D"]
 script = ExtResource( 2 )
@@ -38,4 +38,5 @@ script = ExtResource( 2 )
 frames = SubResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, -36 )
 shape = SubResource( 5 )
