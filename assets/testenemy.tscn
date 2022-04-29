@@ -7,10 +7,6 @@
 atlas = ExtResource( 1 )
 region = Rect2( 16, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=9]
-atlas = ExtResource( 1 )
-region = Rect2( 16, 16, 16, 16 )
-
 [sub_resource type="AtlasTexture" id=11]
 atlas = ExtResource( 1 )
 region = Rect2( 0, 16, 16, 16 )
@@ -19,9 +15,13 @@ region = Rect2( 0, 16, 16, 16 )
 atlas = ExtResource( 1 )
 region = Rect2( 0, 0, 16, 16 )
 
+[sub_resource type="AtlasTexture" id=9]
+atlas = ExtResource( 1 )
+region = Rect2( 16, 16, 16, 16 )
+
 [sub_resource type="SpriteFrames" id=12]
 animations = [ {
-"frames": [ SubResource( 8 ), SubResource( 9 ) ],
+"frames": [ SubResource( 8 ) ],
 "loop": true,
 "name": "default",
 "speed": 5.0
@@ -66,10 +66,10 @@ shape = SubResource( 5 )
 position = Vector2( 0, 1 )
 shape = SubResource( 4 )
 
-[node name="Area2D" type="Area2D" parent="." groups=["enemy"]]
+[node name="interactor" type="Area2D" parent="." groups=["corpse", "enemy"]]
 priority = 1.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" groups=["enemy"]]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="interactor" groups=["enemy"]]
 position = Vector2( 0, -0.5 )
 shape = SubResource( 6 )
 
@@ -78,3 +78,10 @@ shape = SubResource( 6 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyKiller" groups=["enemykiller"]]
 position = Vector2( 0, -10.5 )
 shape = SubResource( 7 )
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+
+[node name="grounder" type="RayCast2D" parent="."]
+position = Vector2( 9, 7 )
+enabled = true
+cast_to = Vector2( 0, 20 )

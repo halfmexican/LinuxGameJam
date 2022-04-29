@@ -1,15 +1,13 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://assets/player.png" type="Texture" id=1]
 [ext_resource path="res://scripts/Player2D.cs" type="Script" id=2]
+[ext_resource path="res://scripts/HUD.cs" type="Script" id=3]
+[ext_resource path="res://assets/fonts/kongtext.ttf" type="DynamicFontData" id=4]
 
 [sub_resource type="AtlasTexture" id=7]
 atlas = ExtResource( 1 )
 region = Rect2( 16, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=5]
-atlas = ExtResource( 1 )
-region = Rect2( 0, 16, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=3]
 atlas = ExtResource( 1 )
@@ -19,6 +17,10 @@ region = Rect2( 0, 0, 16, 16 )
 atlas = ExtResource( 1 )
 region = Rect2( 16, 16, 16, 16 )
 
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 16, 16, 16 )
+
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
 "frames": [ SubResource( 7 ) ],
@@ -26,14 +28,14 @@ animations = [ {
 "name": "default",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 5 ) ],
-"loop": true,
-"name": "jump",
-"speed": 5.0
-}, {
 "frames": [ SubResource( 3 ), SubResource( 6 ) ],
 "loop": true,
 "name": "walking",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 5 ) ],
+"loop": true,
+"name": "jump",
 "speed": 5.0
 } ]
 
@@ -43,8 +45,10 @@ extents = Vector2( 7, 8 )
 [sub_resource type="RectangleShape2D" id=8]
 extents = Vector2( 8, 9 )
 
+[sub_resource type="DynamicFont" id=10]
+font_data = ExtResource( 4 )
+
 [node name="player" type="KinematicBody2D" groups=["player"]]
-position = Vector2( 144, 152 )
 collision_layer = 3
 collision/safe_margin = 0.3
 script = ExtResource( 2 )
@@ -53,6 +57,7 @@ _jumpForce = 125.0
 _inertia = 150.0
 
 [node name="PlayerSprite" type="AnimatedSprite" parent="."]
+z_index = 10
 frames = SubResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["player"]]
@@ -77,11 +82,27 @@ collision_mask = 3
 shape = SubResource( 8 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
+offset = Vector2( 0, -45 )
 current = true
 smoothing_enabled = true
+smoothing_speed = 9.0
 
 [node name="Grounder" type="RayCast2D" parent="."]
 position = Vector2( -7, 0 )
 enabled = true
 cast_to = Vector2( 0, 10 )
 collision_mask = 3
+
+[node name="MusicPlayer" type="AudioStreamPlayer2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+margin_left = 346.0
+margin_top = 7.0
+margin_right = 476.0
+margin_bottom = 47.0
+custom_fonts/font = SubResource( 10 )
+text = "sdas"
+max_lines_visible = 3
+script = ExtResource( 3 )
