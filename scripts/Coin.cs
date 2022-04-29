@@ -33,7 +33,6 @@ public class Coin : Area2D
 			if (body.GetParent() is Player2D)
 			{
 				var player = body.GetParent() as Player2D;
-				//player.AddCoins(1);
 
 				PlayerVariables.coins += 1;
 			}

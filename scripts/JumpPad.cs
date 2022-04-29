@@ -30,17 +30,22 @@ public class JumpPad : Area2D
 	private void CollisionCheck(Node2D area)
 	{
 		
-		if (area.IsInGroup("player"))
+		if (area.IsInGroup("player") || area.IsInGroup("corpse"))
 		{
 			if (area.GetParent() is Player2D)
 			{
 				var player = area.GetParent() as Player2D;
-				player.SetYVelocity(_jumpPadForce);
+				player?.SetYVelocity(_jumpPadForce);
 			}
 			else if (area.GetParent() is deadPlayer)
 			{
 				var player = area.GetParent() as deadPlayer;
-				player.setYVelocity(_jumpPadForce);
+				player?.setYVelocity(_jumpPadForce);
+			}
+			else if (area.GetParent() is deadenemy)
+			{
+				var corpse = area.GetParent() as deadenemy;
+				corpse?.setYVelocity(_jumpPadForce);
 			}
 			
 			
@@ -52,6 +57,7 @@ public class JumpPad : Area2D
 			_audioStreamPlayer2D.PitchScale = random.RandfRange(0.8f, 1.2f);
 			_audioStreamPlayer2D.Play();
 		}
+		
 	}
 
 	private void AnimationFinished()

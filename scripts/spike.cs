@@ -23,7 +23,7 @@ public class spike : StaticBody2D
 
 	private void CollisionCheck(Node2D body)
 	{
-		if (body.IsInGroup("player"))
+		if (body.IsInGroup("player") || body.IsInGroup("enemy") || body.IsInGroup("corpse"))
 		{
 			_animatedSprite.Play("blood");
 			_audioStreamPlayer2D.Stream = ResourceLoader.Load("res://assets/sounds/spikestab.ogg") as AudioStream;

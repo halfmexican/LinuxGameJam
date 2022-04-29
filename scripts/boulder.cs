@@ -48,20 +48,13 @@ namespace LinuxJam.scripts
 		// Called every frame. 'delta' is the elapsed time since the previous frame.
 		public override void _PhysicsProcess(float delta)
 		{
-			if (_isStatic)
-			{
-				this.Mode = ModeEnum.Static;
-			}
-			else
-			{
-				this.Mode = ModeEnum.Character;
-			}
-
+			this.Mode = _isStatic ? ModeEnum.Static : ModeEnum.Character;
 		}
 
 		private void ButtonPressed()
 		{
 			_isStatic = false;
+			buttonLinked = false;
 		}
 		
 		private void Blood(Node body)
@@ -102,9 +95,12 @@ namespace LinuxJam.scripts
 			if (body.IsInGroup("enemy") || body.IsInGroup("enemykiller"))
 			{
 				_killedEnemy = true;
-				KinematicBody2D enemy = body.GetParent() as KinematicBody2D;
-				enemyPos = enemy.Position;
-				enemy.QueueFree();
+				if (body.GetParent() is KinematicBody2D enemy)
+				{
+					enemyPos = enemy.Position;
+					enemy.QueueFree();
+				}
+
 				_playSound = true;
 			}
 			else if (body.IsInGroup("player"))

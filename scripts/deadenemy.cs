@@ -1,11 +1,9 @@
 using Godot;
 using System;
 
-public class deadPlayer : RigidBody2D
+public class deadenemy : RigidBody2D
 {
-	// Declare member variables here. Examples:
-	// private int a = 2;
-	// private string b = "text";
+
 	private RandomNumberGenerator _randomNumberGenerator = new RandomNumberGenerator();
 	private Area2D _area2D;
 	private AnimatedSprite _mySprite;
@@ -21,10 +19,18 @@ public class deadPlayer : RigidBody2D
 
 		_mySprite = GetNode<AnimatedSprite>("AnimatedSprite");
 		_area2D = GetNode<Area2D>("Area2D");
-		_area2D.Connect("area_entered", this, "InteractorCollision");
-
+		//_area2D.Connect("area_entered", this, "InteractorCollision");
+		
 		_randomNumberGenerator.Randomize();
-		_mySprite.FlipH = _randomNumberGenerator.RandiRange(0, 100) < 49;
+		if (_randomNumberGenerator.RandiRange(0, 100) < 49)
+		{
+			_mySprite.FlipH = true;
+		}
+		else
+		{
+			_mySprite.FlipH = false;
+		}
+		
 		
 	}
 	
@@ -43,14 +49,7 @@ public class deadPlayer : RigidBody2D
 		LinearVelocity = new Vector2(xVel, LinearVelocity.y);
 	}
 
-	private void InteractorCollision(Node2D area)
-	{
-		
-		if (area.IsInGroup("enemy"))
-		{
-			setYVelocity(-100); 
-		}
-	}
+
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
 //  public override void _Process(float delta)
 //  {
